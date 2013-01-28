@@ -20,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{D5F6E6
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PclAnalyzer.UI", "PclAnalyzer.UI\PclAnalyzer.UI.csproj", "{7B5F1A98-E743-40B4-9D59-0AB21273D54B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{F02B9BDB-1509-4D0F-BA73-2FA2162B15A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F02B9BDB-1509-4D0F-BA73-2FA2162B15A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F02B9BDB-1509-4D0F-BA73-2FA2162B15A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B5F1A98-E743-40B4-9D59-0AB21273D54B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B5F1A98-E743-40B4-9D59-0AB21273D54B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B5F1A98-E743-40B4-9D59-0AB21273D54B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B5F1A98-E743-40B4-9D59-0AB21273D54B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,11 @@
+﻿<Window x:Class="PclAnalyzer.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="PCL Compliance Analyzer" Height="531.493" Width="921.418">
+    <Grid>
+        <Label Content="Assembly:" HorizontalAlignment="Left" Margin="28,26,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="28,56,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="469"/>
+        <Button Content="Browse..." HorizontalAlignment="Left" Margin="422,26,0,0" VerticalAlignment="Top" Width="75"/>
+
+    </Grid>
+</Window>
