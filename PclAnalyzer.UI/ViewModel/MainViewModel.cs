@@ -1,6 +1,10 @@
+using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using PclAnalyzer.Core;
+using PclAnalyzer.UI.Services;
 
 namespace PclAnalyzer.UI.ViewModel
 {
@@ -31,6 +35,10 @@ namespace PclAnalyzer.UI.ViewModel
         private bool _platformWP75;
         private bool _platformWP8;
         private bool _platformXbox360;
+        private Platforms _requestedPlatforms;
+        private bool _excludeThirdPartyLibraries;
+        private ObservableCollection<MethodCall> _portableCalls = new ObservableCollection<MethodCall>();
+        private ObservableCollection<MethodCall> _nonPortableCalls = new ObservableCollection<MethodCall>();
 
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
@@ -48,13 +56,9 @@ namespace PclAnalyzer.UI.ViewModel
             }
             else
             {
-                _assemblyPath = @"C:\Projects\PclAnalyzer\bin\Debug\PclAnalyzer.Core.dll";
-                _platformNet403 = true;
-                _platformNet45 = true;
-                _platformNetForWsa = true;
-                _platformSL5 = true;
-                _platformWP8 = true;
             }
+
+            _allPlatforms = true;
 
             BrowseCommand = new RelayCommand(Browse, CanBrowse);
             AnalyzeCommand = new RelayCommand(Analyze, CanAnalyze);
@@ -141,10 +145,37 @@ namespace PclAnalyzer.UI.ViewModel
             set { _platformXbox360 = value; RaisePropertyChanged("PlatformXbox360"); }
         }
 
+        public Platforms RequestedPlatforms
+        {
+            get { return _requestedPlatforms; }
+            set { _requestedPlatforms = value; RaisePropertyChanged("RequestedPlatforms"); }
+        }
+
+        public bool ExcludeThirdPartyLibraries
+        {
+            get { return _excludeThirdPartyLibraries; }
+            set { _excludeThirdPartyLibraries = value; RaisePropertyChanged("ExcludeThirdPartyLibraries"); }
+        }
+
+        public ObservableCollection<MethodCall> PortableCalls
+        {
+            get { return _portableCalls; }
+            set { _portableCalls = value; RaisePropertyChanged("PortableCalls"); }
+        }
+
+        public ObservableCollection<MethodCall> NonPortableCalls
+        {
+            get { return _nonPortableCalls; }
+            set { _nonPortableCalls = value; RaisePropertyChanged("NonPortableCalls"); }
+        }
+
         private void Browse()
         {
-            // TODO
-            _assemblyPath = "Test";
+            string assemblyPath = DialogService.SelectAssembly();
+            if (!string.IsNullOrEmpty(assemblyPath))
+            {
+                this.AssemblyPath = assemblyPath;
+            } 
         }
 
         private bool CanBrowse()
@@ -154,7 +185,9 @@ namespace PclAnalyzer.UI.ViewModel
 
         private void Analyze()
         {
-            // TODO
+            var analyzer = new AnalyzerService(this.AssemblyPath, this.RequestedPlatforms);
+            this.PortableCalls = new ObservableCollection<MethodCall>(analyzer.GetPortableCalls());
+            this.NonPortableCalls = new ObservableCollection<MethodCall>(analyzer.GetNonPortableCalls());
         }
 
         private bool CanAnalyze()

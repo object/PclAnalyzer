@@ -68,6 +68,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Services\AnalyzerService.cs" />
+    <Compile Include="Services\DialogService.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="MainWindow.xaml">
@@ -110,7 +112,20 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\PclAnalyzer.Core\PclAnalyzer.Core.csproj">
+      <Project>{5a9ecac1-d37a-45c7-ba92-775f37c0ddf3}</Project>
+      <Name>PclAnalyzer.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PclAnalyzer.Data\PclAnalyzer.Data.csproj">
+      <Project>{dc84b6be-f376-4362-bea5-282bc52bd73c}</Project>
+      <Name>PclAnalyzer.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PclAnalyzer.Reflection\PclAnalyzer.Reflection.csproj">
+      <Project>{faa24d41-30a8-49cf-a75b-d90eeecab0ee}</Project>
+      <Name>PclAnalyzer.Reflection</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

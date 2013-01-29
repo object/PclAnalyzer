@@ -9,24 +9,16 @@ namespace PclAnalyzer.Data
 {
     public static class PortabilityDatabase
     {
-        private static IList<MemberPortability> _collection { get; set; }
+        private static readonly Lazy<IList<MemberPortability>> _collection;
+
+        static PortabilityDatabase()
+        {
+            _collection = new Lazy<IList<MemberPortability>>(LoadCollection);
+        }
 
         public static IList<MemberPortability> Collection
         {
-            get
-            {
-                if (_collection == null)
-                {
-                    lock (typeof(PortabilityDatabase))
-                    {
-                        if (_collection == null)
-                        {
-                            _collection = LoadCollection();
-                        }
-                    }
-                }
-                return _collection;
-            }
+            get { return _collection.Value; }
         }
 
         private static IList<MemberPortability> LoadCollection()
