@@ -15,18 +15,18 @@
         <Button x:Name="buttonAnalyze" Command="{Binding AnalyzeCommand}"
                 Content="Analyze" HorizontalAlignment="Left" Margin="535,30,0,0" VerticalAlignment="Top" Width="74"/>
         <Canvas Height="54" Margin="28,94,25.6,0" VerticalAlignment="Top">
-            <RadioButton Content="All supported platforms"/>
-            <RadioButton Content="Selected platforms" Canvas.Top="20"/>
-            <CheckBox Content=".NET 4" DataContext="{Binding PlatformNet4}" Canvas.Left="168" RenderTransformOrigin="-0.011,0.658"/>
-            <CheckBox Content=".NET 4.0.3" DataContext="{Binding PlatformNet403}" Canvas.Left="168" Canvas.Top="20"/>
-            <CheckBox Content=".NET 4.5" DataContext="{Binding PlatformNet45}" Canvas.Left="168" Canvas.Top="40"/>
-            <CheckBox Content="Silverlight 4" DataContext="{Binding PlatformSL4}" Canvas.Left="252"/>
-            <CheckBox Content="Silverlight 5" DataContext="{Binding PlatformSL5}" Canvas.Left="252" Canvas.Top="20"/>
-            <CheckBox Content="Windows Phone 7" DataContext="{Binding PlatformWP7}" Canvas.Left="348"/>
-            <CheckBox Content="Windows Phone 7.5" DataContext="{Binding PlatformWP75}" Canvas.Left="348" Canvas.Top="20"/>
-            <CheckBox Content="Windows Phone 8" DataContext="{Binding PlatformWP8}" Canvas.Left="348" Canvas.Top="40"/>
-            <CheckBox Content=".NET for WSA" DataContext="{Binding PlatformNetForWsa}" Canvas.Left="488"/>
-            <CheckBox Content="Xbox 360" DataContext="{Binding PlatformXbox360}" Canvas.Left="488" Canvas.Top="20" RenderTransformOrigin="-0.112,2.816"/>
+            <RadioButton Content="All platforms" IsChecked="{Binding AllPlatforms}"/>
+            <RadioButton Content="Selected platforms" IsChecked="{Binding SelectedPlatforms}" Canvas.Top="20"/>
+            <CheckBox Content=".NET 4" IsChecked="{Binding PlatformNet4}" Canvas.Left="168" RenderTransformOrigin="-0.011,0.658"/>
+            <CheckBox Content=".NET 4.0.3" IsChecked="{Binding PlatformNet403}" Canvas.Left="168" Canvas.Top="20"/>
+            <CheckBox Content=".NET 4.5" IsChecked="{Binding PlatformNet45}" Canvas.Left="168" Canvas.Top="40"/>
+            <CheckBox Content="Silverlight 4" IsChecked="{Binding PlatformSL4}" Canvas.Left="252"/>
+            <CheckBox Content="Silverlight 5" IsChecked="{Binding PlatformSL5}" Canvas.Left="252" Canvas.Top="20"/>
+            <CheckBox Content="Windows Phone 7" IsChecked="{Binding PlatformWP7}" Canvas.Left="348"/>
+            <CheckBox Content="Windows Phone 7.5" IsChecked="{Binding PlatformWP75}" Canvas.Left="348" Canvas.Top="20"/>
+            <CheckBox Content="Windows Phone 8" IsChecked="{Binding PlatformWP8}" Canvas.Left="348" Canvas.Top="40"/>
+            <CheckBox Content=".NET for WSA" IsChecked="{Binding PlatformNetForWsa}" Canvas.Left="488"/>
+            <CheckBox Content="Xbox 360" IsChecked="{Binding PlatformXbox360}" Canvas.Left="488" Canvas.Top="20" RenderTransformOrigin="-0.112,2.816"/>
         </Canvas>
         <Label Content="Portable calls:" HorizontalAlignment="Left" Margin="28,152,0,0" VerticalAlignment="Top"/>
         <DataGrid HorizontalAlignment="Left" Margin="28,178,0,0" VerticalAlignment="Top" Height="135" Width="581"/>

@@ -19,15 +19,17 @@ namespace PclAnalyzer.UI.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private string _assemblyPath;
+        private bool _allPlatforms;
+        private bool _selectedPlatforms;
         private bool _platformNet4;
         private bool _platformNet403;
         private bool _platformNet45;
+        private bool _platformNetForWsa;
         private bool _platformSL4;
         private bool _platformSL5;
         private bool _platformWP7;
         private bool _platformWP75;
         private bool _platformWP8;
-        private bool _platformNetForWsa;
         private bool _platformXbox360;
 
         /// <summary>
@@ -40,6 +42,7 @@ namespace PclAnalyzer.UI.ViewModel
                 _assemblyPath = @"C:\Projects\PclAnalyzer\bin\Debug\PclAnalyzer.Core.dll";
                 _platformNet403 = true;
                 _platformNet45 = true;
+                _platformNetForWsa = true;
                 _platformSL5 = true;
                 _platformWP8 = true;
             }
@@ -48,6 +51,7 @@ namespace PclAnalyzer.UI.ViewModel
                 _assemblyPath = @"C:\Projects\PclAnalyzer\bin\Debug\PclAnalyzer.Core.dll";
                 _platformNet403 = true;
                 _platformNet45 = true;
+                _platformNetForWsa = true;
                 _platformSL5 = true;
                 _platformWP8 = true;
             }
@@ -56,16 +60,25 @@ namespace PclAnalyzer.UI.ViewModel
             AnalyzeCommand = new RelayCommand(Analyze, CanAnalyze);
         }
 
-        public MainViewModel Self { get { return this; } }
-
         public RelayCommand BrowseCommand { get; private set; }
-
         public RelayCommand AnalyzeCommand { get; private set; }
 
         public string AssemblyPath
         {
             get { return _assemblyPath; }
             set { _assemblyPath = value; RaisePropertyChanged("AssemblyPath"); }
+        }
+
+        public bool AllPlatforms
+        {
+            get { return _allPlatforms; }
+            set { _allPlatforms = value; RaisePropertyChanged("AllPlatforms"); }
+        }
+
+        public bool SelectedPlatforms
+        {
+            get { return _selectedPlatforms; }
+            set { _selectedPlatforms = value; RaisePropertyChanged("SelectedPlatforms"); }
         }
 
         public bool PlatformNet4
@@ -84,6 +97,12 @@ namespace PclAnalyzer.UI.ViewModel
         {
             get { return _platformNet45; }
             set { _platformNet45 = value; RaisePropertyChanged("PlatformNet45"); }
+        }
+
+        public bool PlatformNetForWsa
+        {
+            get { return _platformNetForWsa; }
+            set { _platformNetForWsa = value; RaisePropertyChanged("PlatformNetForWsa"); }
         }
 
         public bool PlatformSL4
@@ -114,12 +133,6 @@ namespace PclAnalyzer.UI.ViewModel
         {
             get { return _platformWP8; }
             set { _platformWP8 = value; RaisePropertyChanged("PlatformWP8"); }
-        }
-
-        public bool PlatformNetForWsa
-        {
-            get { return _platformNetForWsa; }
-            set { _platformNetForWsa = value; RaisePropertyChanged("PlatformNetForWsa"); }
         }
 
         public bool PlatformXbox360
