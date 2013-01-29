@@ -8,18 +8,6 @@ using PclAnalyzer.UI.Services;
 
 namespace PclAnalyzer.UI.ViewModel
 {
-    /// <summary>
-    /// This class contains properties that the main View can data bind to.
-    /// <para>
-    /// Use the <strong>mvvminpc</strong> snippet to add bindable properties to this ViewModel.
-    /// </para>
-    /// <para>
-    /// You can also use Blend to data bind with the tool's support.
-    /// </para>
-    /// <para>
-    /// See http://www.galasoft.ch/mvvm
-    /// </para>
-    /// </summary>
     public class MainViewModel : ViewModelBase
     {
         private string _assemblyPath;
@@ -35,10 +23,12 @@ namespace PclAnalyzer.UI.ViewModel
         private bool _platformWP75;
         private bool _platformWP8;
         private bool _platformXbox360;
-        private Platforms _requestedPlatforms;
         private bool _excludeThirdPartyLibraries;
-        private ObservableCollection<MethodCall> _portableCalls = new ObservableCollection<MethodCall>();
-        private ObservableCollection<MethodCall> _nonPortableCalls = new ObservableCollection<MethodCall>();
+        private ObservableCollection<CallInfo> _portableCalls = new ObservableCollection<CallInfo>();
+        private ObservableCollection<CallInfo> _nonPortableCalls = new ObservableCollection<CallInfo>();
+        private string _portableCallsLabel;
+        private string _nonPortableCallsLabel;
+        private bool _isBusy;
 
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
@@ -53,6 +43,8 @@ namespace PclAnalyzer.UI.ViewModel
                 _platformNetForWsa = true;
                 _platformSL5 = true;
                 _platformWP8 = true;
+                _portableCallsLabel = "Portable calls:";
+                _nonPortableCallsLabel = "Non-portable calls:";
             }
             else
             {
@@ -145,28 +137,40 @@ namespace PclAnalyzer.UI.ViewModel
             set { _platformXbox360 = value; RaisePropertyChanged("PlatformXbox360"); }
         }
 
-        public Platforms RequestedPlatforms
-        {
-            get { return _requestedPlatforms; }
-            set { _requestedPlatforms = value; RaisePropertyChanged("RequestedPlatforms"); }
-        }
-
         public bool ExcludeThirdPartyLibraries
         {
             get { return _excludeThirdPartyLibraries; }
             set { _excludeThirdPartyLibraries = value; RaisePropertyChanged("ExcludeThirdPartyLibraries"); }
         }
 
-        public ObservableCollection<MethodCall> PortableCalls
+        public ObservableCollection<CallInfo> PortableCalls
         {
             get { return _portableCalls; }
             set { _portableCalls = value; RaisePropertyChanged("PortableCalls"); }
         }
 
-        public ObservableCollection<MethodCall> NonPortableCalls
+        public ObservableCollection<CallInfo> NonPortableCalls
         {
             get { return _nonPortableCalls; }
             set { _nonPortableCalls = value; RaisePropertyChanged("NonPortableCalls"); }
+        }
+
+        public string PortableCallsLabel
+        {
+            get { return _portableCallsLabel; }
+            set { _portableCallsLabel = value; RaisePropertyChanged("PortableCallsLabel"); }
+        }
+
+        public string NonPortableCallsLabel
+        {
+            get { return _nonPortableCallsLabel; }
+            set { _nonPortableCallsLabel = value; RaisePropertyChanged("NonPortableCallsLabel"); }
+        }
+
+        public bool IsBusy
+        {
+            get { return _isBusy; }
+            set { _isBusy = value; RaisePropertyChanged("IsBusy"); }
         }
 
         private void Browse()
@@ -185,9 +189,34 @@ namespace PclAnalyzer.UI.ViewModel
 
         private void Analyze()
         {
-            var analyzer = new AnalyzerService(this.AssemblyPath, this.RequestedPlatforms);
-            this.PortableCalls = new ObservableCollection<MethodCall>(analyzer.GetPortableCalls());
-            this.NonPortableCalls = new ObservableCollection<MethodCall>(analyzer.GetNonPortableCalls());
+            this.IsBusy = true;
+
+            var requestedPlatforms = Platforms.None;
+            if (this.AllPlatforms)
+            {
+                requestedPlatforms = Platforms.AllKnown;
+            }
+            else
+            {
+                if (this.PlatformNet4) requestedPlatforms |= Platforms.Net4;
+                if (this.PlatformNet403) requestedPlatforms |= Platforms.Net403;
+                if (this.PlatformNet45) requestedPlatforms |= Platforms.Net45;
+                if (this.PlatformNetForWsa) requestedPlatforms |= Platforms.NetForWsa;
+                if (this.PlatformSL4) requestedPlatforms |= Platforms.SL4;
+                if (this.PlatformSL5) requestedPlatforms |= Platforms.SL5;
+                if (this.PlatformWP7) requestedPlatforms |= Platforms.WP7;
+                if (this.PlatformWP75) requestedPlatforms |= Platforms.WP75;
+                if (this.PlatformWP8) requestedPlatforms |= Platforms.WP8;
+                if (this.PlatformXbox360) requestedPlatforms |= Platforms.Xbox360;
+            }
+
+            var analyzer = new AnalyzerService(this.AssemblyPath, requestedPlatforms, this.ExcludeThirdPartyLibraries);
+            this.PortableCalls = new ObservableCollection<CallInfo>(analyzer.GetPortableCalls());
+            this.PortableCallsLabel = string.Format("Portable calls ({0}):", this.PortableCalls.Count);
+            this.NonPortableCalls = new ObservableCollection<CallInfo>(analyzer.GetNonPortableCalls());
+            this.NonPortableCallsLabel = string.Format("Non-portable calls ({0}):", this.NonPortableCalls.Count);
+
+            this.IsBusy = false;
         }
 
         private bool CanAnalyze()

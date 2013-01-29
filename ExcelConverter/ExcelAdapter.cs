@@ -41,6 +41,13 @@ namespace ExcelConverter
                 if (ConvertToBoolean(row[col++]))
                     item.SupportedPlatforms |= Platforms.Xbox360;
 
+                var index = item.TypeName.IndexOf("<");
+                if (index > 0)
+                {
+                    var cardinality = item.TypeName.Split().Count();
+                    item.TypeName = item.TypeName.Substring(0, index);
+                    item.TypeName += "`" + cardinality.ToString();
+                }
                 var prefix = item.ID.Substring(0, 2);
                 switch (prefix)
                 {

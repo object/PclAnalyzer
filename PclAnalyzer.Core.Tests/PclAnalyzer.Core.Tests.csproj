@@ -45,7 +45,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonAssemblyVersion.cs">
+      <Link>Properties\CommonAssemblyVersion.cs</Link>
+    </Compile>
+    <Compile Include="GenericListClass.cs" />
     <Compile Include="HttpWebRequestClass.cs" />
+    <Compile Include="NUnitClass.cs" />
     <Compile Include="PortabilityAnalyzerTests.cs" />
     <Compile Include="PortableClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

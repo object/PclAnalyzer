@@ -83,5 +83,33 @@ namespace PclAnalyzer.Core.Tests
             var portableCalls = _portabilityAnalyzer.GetPortableCalls();
             Assert.AreEqual(calls.Count - nonPortableCalls.Count, portableCalls.Count);
         }
+
+        [Test]
+        public void GenericListClass()
+        {
+            var calls = _assemblyParser.GetTypeCalls("PclAnalyzer.Core.Tests.GenericListClass");
+            _portabilityAnalyzer.CallCollection = calls;
+
+            _portabilityAnalyzer.SupportedPlatforms = Platforms.AllKnown;
+            var portableCalls = _portabilityAnalyzer.GetPortableCalls();
+            Assert.AreEqual(calls.Count, portableCalls.Count);
+        }
+
+        [Test]
+        public void NUnitClass()
+        {
+            var calls = _assemblyParser.GetTypeCalls("PclAnalyzer.Core.Tests.NUnitClass");
+            _portabilityAnalyzer.CallCollection = calls;
+
+            _portabilityAnalyzer.SupportedPlatforms = Platforms.AllKnown;
+            var portableCalls = _portabilityAnalyzer.GetPortableCalls();
+            Assert.AreEqual(1, portableCalls.Count);
+
+            _portabilityAnalyzer.ExcludeThirdPartyReferences = true;
+            portableCalls = _portabilityAnalyzer.GetPortableCalls();
+            Assert.AreEqual(0, portableCalls.Count);
+            var nonPortableCalls = _portabilityAnalyzer.GetNonPortableCalls();
+            Assert.AreEqual(0, nonPortableCalls.Count);
+        }
     }
 }

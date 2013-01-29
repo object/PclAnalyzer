@@ -4,9 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         mc:Ignorable="d" 
-        Title="PCL Compliance Analyzer" Height="723.732" Width="653.618"
+        Title="PCL Compliance Analyzer" Height="723.732" Width="857.618"
         DataContext="{Binding Source={StaticResource Locator}, Path=MainViewModel}">
-    <Grid HorizontalAlignment="Left" Width="633">
+    <Grid HorizontalAlignment="Left" Width="848">
         <Grid.RowDefinitions>
             <RowDefinition Height="603*"/>
             <RowDefinition Height="50*"/>
@@ -14,43 +14,56 @@
         </Grid.RowDefinitions>
         <Label Content="Assembly:" HorizontalAlignment="Left" Margin="28,22,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="textAssemblyPath" Text="{Binding AssemblyPath}"
-                 HorizontalAlignment="Left" Height="23" Margin="28,48,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="595"/>
+                 HorizontalAlignment="Left" Height="23" Margin="28,48,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="794"/>
         <Button x:Name="buttonBrowse" Command="{Binding BrowseCommand}"
-                Content="Browse..." HorizontalAlignment="Left" Margin="468,22,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.395,-0.152"/>
+                Content="Browse..." HorizontalAlignment="Left" Margin="668,24,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.395,-0.152"/>
         <Button x:Name="buttonAnalyze" Command="{Binding AnalyzeCommand}"
-                Content="Analyze" HorizontalAlignment="Left" Margin="548,22,0,0" VerticalAlignment="Top" Width="74"/>
+                Content="Analyze" HorizontalAlignment="Left" Margin="748,24,0,0" VerticalAlignment="Top" Width="74">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Cursor" Value="Arrow"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsBusy}" Value="True">
+                            <Setter Property="Cursor" Value="Wait"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
         <Canvas Height="54" Margin="28,86,26.2,0" VerticalAlignment="Top">
             <RadioButton Content="All platforms" IsChecked="{Binding AllPlatforms}"/>
             <RadioButton Content="Selected platforms" IsChecked="{Binding SelectedPlatforms}" Canvas.Top="20"/>
             <CheckBox Content=".NET 4" IsChecked="{Binding PlatformNet4}" IsEnabled="{Binding SelectedPlatforms}" 
-                      Canvas.Left="152" RenderTransformOrigin="-0.011,0.658"/>
+                      Canvas.Left="187" RenderTransformOrigin="-0.011,0.658"/>
             <CheckBox Content=".NET 4.0.3" IsChecked="{Binding PlatformNet403}" IsEnabled="{Binding SelectedPlatforms}" 
-                      Canvas.Left="152" Canvas.Top="20"/>
+                      Canvas.Left="187" Canvas.Top="20"/>
             <CheckBox Content=".NET 4.5" IsChecked="{Binding PlatformNet45}" IsEnabled="{Binding SelectedPlatforms}" 
-                      Canvas.Left="152" Canvas.Top="40"/>
+                      Canvas.Left="187" Canvas.Top="40"/>
             <CheckBox Content="Silverlight 4" IsChecked="{Binding PlatformSL4}" IsEnabled="{Binding SelectedPlatforms}" 
-                      Canvas.Left="241"/>
+                      Canvas.Left="444"/>
             <CheckBox Content="Silverlight 5" IsChecked="{Binding PlatformSL5}" IsEnabled="{Binding SelectedPlatforms}" 
-                      Canvas.Left="241" Canvas.Top="20"/>
+                      Canvas.Left="444" Canvas.Top="20"/>
             <CheckBox Content="Windows Phone 7" IsChecked="{Binding PlatformWP7}" IsEnabled="{Binding SelectedPlatforms}" 
-                      Canvas.Left="342"/>
+                      Canvas.Left="569"/>
             <CheckBox Content="Windows Phone 7.5" IsChecked="{Binding PlatformWP75}" IsEnabled="{Binding SelectedPlatforms}" 
-                      Canvas.Left="342" Canvas.Top="20"/>
+                      Canvas.Left="569" Canvas.Top="20"/>
             <CheckBox Content="Windows Phone 8" IsChecked="{Binding PlatformWP8}" IsEnabled="{Binding SelectedPlatforms}" 
-                      Canvas.Left="342" Canvas.Top="40"/>
+                      Canvas.Left="569" Canvas.Top="40"/>
             <CheckBox Content=".NET for WSA" IsChecked="{Binding PlatformNetForWsa}" IsEnabled="{Binding SelectedPlatforms}" 
-                      Canvas.Left="488"/>
+                      Canvas.Left="302"/>
             <CheckBox Content="Xbox 360" IsChecked="{Binding PlatformXbox360}" IsEnabled="{Binding SelectedPlatforms}" 
-                      Canvas.Left="488" Canvas.Top="20" RenderTransformOrigin="-0.112,2.816"/>
+                      Canvas.Left="728" RenderTransformOrigin="-0.112,2.816"/>
         </Canvas>
-        <Label Content="Portable calls:" HorizontalAlignment="Left" Margin="29,157,0,0" VerticalAlignment="Top"/>
-        <DataGrid ItemsSource="{Binding PortableCalls}" 
-                  HorizontalAlignment="Left" Margin="29,183,0,0" VerticalAlignment="Top" Height="228" Width="595"/>
-        <Label Content="Non-portable calls:" HorizontalAlignment="Left" Margin="29,416,0,0" VerticalAlignment="Top"/>
-        <DataGrid ItemsSource="{Binding NonPortableCalls}" HorizontalAlignment="Left" Margin="29,442,0,0" VerticalAlignment="Top" Height="228" Width="594" Grid.RowSpan="2"/>
-        <Button Content="&gt;&gt; | &lt;&lt;" 
-                HorizontalAlignment="Left" Margin="548,156,0,0" VerticalAlignment="Top" Width="75"/>
-        <CheckBox Content="Exclude third party libraries" HorizontalAlignment="Left" Margin="367,162,0,0" VerticalAlignment="Top" FlowDirection="RightToLeft"/>
+        <CheckBox Content="Exclude third party libraries" IsChecked="{Binding ExcludeThirdPartyLibraries}"
+                  HorizontalAlignment="Left" Margin="661,162,0,0" VerticalAlignment="Top" FlowDirection="RightToLeft"/>
+        <Label Content="{Binding PortableCallsLabel}" 
+               HorizontalAlignment="Left" Margin="29,157,0,0" VerticalAlignment="Top"/>
+        <DataGrid ItemsSource="{Binding PortableCalls}" CanUserSortColumns="True"
+                  HorizontalAlignment="Left" Margin="29,183,0,0" VerticalAlignment="Top" Height="228" Width="793"/>
+        <Label Content="{Binding NonPortableCallsLabel}" 
+               HorizontalAlignment="Left" Margin="29,416,0,0" VerticalAlignment="Top"/>
+        <DataGrid ItemsSource="{Binding NonPortableCalls}" CanUserSortColumns="True" 
+                  HorizontalAlignment="Left" Margin="29,442,0,0" VerticalAlignment="Top" Height="228" Width="793" Grid.RowSpan="2"/>
 
     </Grid>
 </Window>
