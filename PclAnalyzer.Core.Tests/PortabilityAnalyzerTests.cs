@@ -19,8 +19,15 @@ namespace PclAnalyzer.Core.Tests
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
         {
-            _portabilityAnalyzer = new PortabilityAnalyzer(PortabilityDatabase.Collection);
             _assemblyParser = new AssemblyParser(Assembly.GetExecutingAssembly().Location);
+            _portabilityAnalyzer = new PortabilityAnalyzer(PortabilityDatabase.Collection);
+        }
+
+        [SetUp]
+        public void SetUp()
+        {
+            _portabilityAnalyzer.SupportedPlatforms = Platforms.AllKnown;
+            _portabilityAnalyzer.ExcludeThirdPartyReferences = false;
         }
 
         [Test]

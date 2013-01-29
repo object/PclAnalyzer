@@ -9,7 +9,6 @@ namespace PclAnalyzer.Core
         private Platforms _supportedPlatforms;
         private bool _excludeThirdPartyReferences;
         private IList<MethodCall> _callCollection;
-        private bool _recalculatePortableCalls;
         private IList<MethodCall> _portableCalls;
 
         public PortabilityAnalyzer(IList<MemberPortability> repository)
@@ -20,7 +19,9 @@ namespace PclAnalyzer.Core
         public Platforms SupportedPlatforms 
         {
             get { return _supportedPlatforms; }
-            set { _supportedPlatforms = value; _recalculatePortableCalls = true;
+            set
+            {
+                _supportedPlatforms = value; _portableCalls = null;
             }
         }
 
@@ -29,7 +30,7 @@ namespace PclAnalyzer.Core
             get { return _excludeThirdPartyReferences; }
             set
             {
-                _excludeThirdPartyReferences = value; _recalculatePortableCalls = true;
+                _excludeThirdPartyReferences = value; _portableCalls = null;
             }
         }
 
@@ -38,16 +39,15 @@ namespace PclAnalyzer.Core
             get { return _callCollection; }
             set
             {
-                _callCollection = value; _recalculatePortableCalls = true;
+                _callCollection = value; _portableCalls = null;
             }
         }
 
         public IList<MethodCall> GetPortableCalls()
         {
-            if (_portableCalls != null && !_recalculatePortableCalls)
+            if (_portableCalls != null)
                 return _portableCalls;
 
-            _recalculatePortableCalls = false;
             var result = (from c in this.CallCollection
                           from p in _repository
                           where (c.ReferencedMethod.Equals(p.GetMember()) || AreEquivalent(c.ReferencedMethod, p.GetMember())) && 
@@ -68,7 +68,7 @@ namespace PclAnalyzer.Core
 
         public IList<MethodCall> GetNonPortableCalls()
         {
-            if (_portableCalls == null || _recalculatePortableCalls)
+            if (_portableCalls == null)
                 this.GetPortableCalls();
 
             var result = this.CallCollection.Except(_portableCalls)
