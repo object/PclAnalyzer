@@ -90,12 +90,12 @@ namespace PclAnalyzer.Reflection
 
         private Member GetMethodInfo(MethodDefinition method)
         {
-            return new Member(method.DeclaringType.Namespace, method.DeclaringType.Name, method.Name);
+            return new Member(method.DeclaringType.Scope.Name, method.DeclaringType.Namespace, method.DeclaringType.Name, method.Name);
         }
 
         private Member GetMethodInfo(MethodReference method)
         {
-            return new Member(method.DeclaringType.Namespace, method.DeclaringType.Name, method.Name);
+            return new Member(method.DeclaringType.Scope.Name, method.DeclaringType.Namespace, method.DeclaringType.Name, method.Name);
         }
     }
 }

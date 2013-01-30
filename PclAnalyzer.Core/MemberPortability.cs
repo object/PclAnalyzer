@@ -13,7 +13,7 @@ namespace PclAnalyzer.Core
 
         public Member GetMember()
         {
-            return new Member(this.Namespace, this.TypeName, this.MemberName);
+            return new Member(string.Empty, this.Namespace, this.TypeName, this.MemberName);
         }
     }
 }

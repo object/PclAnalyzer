@@ -50,7 +50,7 @@ namespace PclAnalyzer.Core
 
             var result = (from c in this.CallCollection
                           from p in _repository
-                          where (c.ReferencedMethod.Equals(p.GetMember()) || AreEquivalent(c.ReferencedMethod, p.GetMember())) && 
+                          where c.ReferencedMethod.Equals(p.GetMember()) && 
                           (this.SupportedPlatforms & p.SupportedPlatforms) == this.SupportedPlatforms
                           select c)
                           .Union(
@@ -60,7 +60,7 @@ namespace PclAnalyzer.Core
                           .Distinct();
 
             if (this.ExcludeThirdPartyReferences)
-                result = result.Where(x => !IsThirdPartyCall(x.ReferencedMethod));
+                result = result.Where(x => x.ReferencedMethod.IsClrMember());
 
             _portableCalls = result.ToList();
             return _portableCalls;
@@ -74,34 +74,13 @@ namespace PclAnalyzer.Core
             var result = this.CallCollection.Except(_portableCalls)
                 .Distinct();
             if (this.ExcludeThirdPartyReferences)
-                result = result.Where(x => !IsThirdPartyCall(x.ReferencedMethod));
+                result = result.Where(x => x.ReferencedMethod.IsClrMember());
             return result.ToList();
-        }
-
-        private bool IsThirdPartyCall(Member member)
-        {
-            return !member.Namespace.StartsWith("System.") && !member.Namespace.StartsWith("Microsoft.");
         }
 
         private bool IsInlineEnumerator(Member member)
         {
             return string.IsNullOrEmpty(member.Namespace) && member.TypeName == "Enumerator";
-        }
-
-        private bool AreEquivalent(Member member1, Member member2)
-        {
-            if (member1.Namespace == "System.Xml.Linq" &&
-                member2.Namespace == "System.Xml.Linq" &&
-                member1.MemberName == member2.MemberName &&
-                (member1.TypeName == "Extensions" && member2.TypeName == "XElementExtensions" ||
-                 member2.TypeName == "Extensions" && member1.TypeName == "XElementExtensions" ||
-                 member1.TypeName == "Extensions" && member2.TypeName == "XAttributeExtensions" ||
-                 member2.TypeName == "Extensions" && member1.TypeName == "XAttributeExtensions"))
-            {
-                return true;
-            }
-
-            return false;
         }
     }
 }

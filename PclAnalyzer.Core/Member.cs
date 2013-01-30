@@ -4,6 +4,7 @@ namespace PclAnalyzer.Core
 {
     public class Member
     {
+        public string Scope { get; set; }
         public string Namespace { get; set; }
         public string TypeName { get; set; }
         public string MemberName { get; set; }
@@ -12,8 +13,9 @@ namespace PclAnalyzer.Core
         {
         }
 
-        public Member(string namespaceName, string typeName, string memberName)
+        public Member(string scope, string namespaceName, string typeName, string memberName)
         {
+            this.Scope = scope;
             this.Namespace = namespaceName;
             this.TypeName = typeName;
             this.MemberName = memberName;
@@ -38,6 +40,7 @@ namespace PclAnalyzer.Core
             {
                 var info = obj as Member;
                 return
+                    (this.IsClrMember() && info.IsClrMember() || this.Scope.Equals(info.Scope)) &&
                     this.Namespace.Equals(info.Namespace) &&
                     this.TypeName.Equals(info.TypeName) &&
                     this.MemberName.Equals(info.MemberName);
@@ -51,6 +54,15 @@ namespace PclAnalyzer.Core
         public override int GetHashCode()
         {
             return this.Namespace.GetHashCode() ^ this.TypeName.GetHashCode() ^ this.MemberName.GetHashCode();
+        }
+
+        public bool IsClrMember()
+        {
+            return string.IsNullOrEmpty(this.Scope) ||
+                   this.Scope == "mscorlib" ||
+                   this.Scope == "System" ||
+                   this.Scope.StartsWith("System.") ||
+                   this.Scope.StartsWith("Microsoft");
         }
     }
 }
