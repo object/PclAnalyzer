@@ -1,6 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using PclAnalyzer.Core;
@@ -190,7 +194,20 @@ namespace PclAnalyzer.UI.ViewModel
         private void Analyze()
         {
             this.IsBusy = true;
+            this.PortableCalls.Clear();
+            this.PortableCallsLabel = string.Format("Portable calls ({0}):", "computing...");
+            this.NonPortableCalls.Clear();
+            this.NonPortableCallsLabel = string.Format("Non-portable calls ({0}):", "computing...");
 
+            Task.Factory.StartNew(RunAnalyzer).ContinueWith((t) =>
+            {
+                this.IsBusy = false;
+            }, 
+            TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        private void RunAnalyzer()
+        {
             var requestedPlatforms = Platforms.None;
             if (this.AllPlatforms)
             {
@@ -209,7 +226,6 @@ namespace PclAnalyzer.UI.ViewModel
                 if (this.PlatformWP8) requestedPlatforms |= Platforms.WP8;
                 if (this.PlatformXbox360) requestedPlatforms |= Platforms.Xbox360;
             }
-
             var analyzer = new AnalyzerService(this.AssemblyPath, requestedPlatforms, this.ExcludeThirdPartyLibraries);
             this.PortableCalls = new ObservableCollection<CallInfo>(analyzer.GetPortableCalls());
             this.PortableCallsLabel = string.Format("Portable calls ({0}):", this.PortableCalls.Count);
