@@ -5,7 +5,7 @@ namespace PclAnalyzer.Core
 {
     public class PortabilityAnalyzer
     {
-        private IList<MemberPortability> _repository;
+        private readonly IList<MemberPortability> _repository;
         private Platforms _supportedPlatforms;
         private bool _excludeThirdPartyReferences;
         private IList<MethodCall> _callCollection;
@@ -48,16 +48,11 @@ namespace PclAnalyzer.Core
             if (_portableCalls != null)
                 return _portableCalls;
 
-            var result = (from c in this.CallCollection
-                          from p in _repository
-                          where c.ReferencedMethod.Equals(p.GetMember()) && 
-                          (this.SupportedPlatforms & p.SupportedPlatforms) == this.SupportedPlatforms
-                          select c)
-                          .Union(
-                          from c in this.CallCollection 
-                          where IsInlineEnumerator(c.ReferencedMethod) 
-                          select c)
-                          .Distinct();
+            var calls = (from c in this.CallCollection.AsParallel()
+                         where IsPortable(c)
+                         select c);
+
+            var result = calls.Distinct();
 
             if (this.ExcludeThirdPartyReferences)
                 result = result.Where(x => x.ReferencedMethod.IsClrMember());
@@ -76,6 +71,15 @@ namespace PclAnalyzer.Core
             if (this.ExcludeThirdPartyReferences)
                 result = result.Where(x => x.ReferencedMethod.IsClrMember());
             return result.ToList();
+        }
+
+        private bool IsPortable(MethodCall call)
+        {
+            return _repository.Any(
+                x =>
+                    call.ReferencedMethod.Equals(x.GetMember()) &&
+                    (this.SupportedPlatforms & x.SupportedPlatforms) == this.SupportedPlatforms) 
+                || IsInlineEnumerator(call.ReferencedMethod);
         }
 
         private bool IsInlineEnumerator(Member member)

@@ -10,7 +10,7 @@ namespace PclAnalyzer.Reflection
 {
     public class AssemblyParser
     {
-        private string _assemblyPath;
+        private readonly string _assemblyPath;
 
         public AssemblyParser(string assemblyPath)
         {
@@ -21,44 +21,48 @@ namespace PclAnalyzer.Reflection
         {
             var module = ModuleDefinition.ReadModule(_assemblyPath);
 
-            return (from t in module.Types
-                    from m in t.Methods
-                    where m.Body != null
-                    from i in m.Body.Instructions
-                    where IsExternalCall(module, i)
-                    select new MethodCall(GetMethodInfo(m), GetMethodInfo(i.Operand as MethodReference)))
-                    .Distinct()
-                    .Where(x => !IsExcluded(x.ReferencedMethod)).ToList();
+            var methods = from t in module.Types
+                          from m in t.Methods
+                          where m.Body != null
+                          select m;
+
+            return GetMethodCalls(module, methods).ToList();
         }
 
         public IList<MethodCall> GetTypeCalls(string typeName)
         {
             var module = ModuleDefinition.ReadModule(_assemblyPath);
 
-            return (from t in module.Types
-                    where GetTypeFullName(t) == typeName
-                    from m in t.Methods
-                    where m.Body != null
-                    from i in m.Body.Instructions
-                    where IsExternalCall(module, i)
-                    select new MethodCall(GetMethodInfo(m), GetMethodInfo(i.Operand as MethodReference)))
-                    .Distinct()
-                    .Where(x => !IsExcluded(x.ReferencedMethod)).ToList();
+            var methods = from t in module.Types
+                          where GetTypeFullName(t) == typeName
+                          from m in t.Methods
+                          where m.Body != null
+                          select m;
+
+            return GetMethodCalls(module, methods).ToList();
         }
 
         public IList<MethodCall> GetMethodCalls(string typeName, string methodName)
         {
             var module = ModuleDefinition.ReadModule(_assemblyPath);
 
-            return (from t in module.Types
-                    where GetTypeFullName(t) == typeName
-                    from m in t.Methods
-                    where m.Body != null && GetMethodFullName(m) == string.Join(".", typeName, methodName)
-                    from i in m.Body.Instructions
-                    where IsExternalCall(module, i)
-                    select new MethodCall(GetMethodInfo(m), GetMethodInfo(i.Operand as MethodReference)))
-                    .Distinct()
-                    .Where(x => !IsExcluded(x.ReferencedMethod)).ToList();
+            var method = (from t in module.Types
+                          where GetTypeFullName(t) == typeName
+                          from m in t.Methods
+                          where m.Body != null && GetMethodFullName(m) == string.Join(".", typeName, methodName)
+                          select m).Single();
+
+            return GetMethodCalls(module, new[] { method }).ToList();
+        }
+
+        private IEnumerable<MethodCall> GetMethodCalls(ModuleDefinition module, IEnumerable<MethodDefinition> methods)
+        {
+            var methodCalls = from m in methods
+                              from i in m.Body.Instructions
+                              where IsExternalCall(module, i)
+                              select new MethodCall(GetMethodInfo(m), GetMethodInfo(i.Operand as MethodReference));
+
+            return methodCalls.Distinct().Where(x => !IsExcluded(x.ReferencedMethod)).ToList();
         }
 
         private string GetTypeFullName(TypeDefinition type)
