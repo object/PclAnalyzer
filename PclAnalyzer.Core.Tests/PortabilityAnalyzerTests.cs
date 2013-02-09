@@ -111,11 +111,13 @@ namespace PclAnalyzer.Core.Tests
             _portabilityAnalyzer.SupportedPlatforms = Platforms.AllKnown;
             var portableCalls = _portabilityAnalyzer.GetPortableCalls();
             Assert.AreEqual(1, portableCalls.Count);
+            var nonPortableCalls = _portabilityAnalyzer.GetNonPortableCalls();
+            Assert.AreEqual(1, nonPortableCalls.Count);
 
             _portabilityAnalyzer.ExcludeThirdPartyReferences = true;
             portableCalls = _portabilityAnalyzer.GetPortableCalls();
-            Assert.AreEqual(0, portableCalls.Count);
-            var nonPortableCalls = _portabilityAnalyzer.GetNonPortableCalls();
+            Assert.AreEqual(1, portableCalls.Count);
+            nonPortableCalls = _portabilityAnalyzer.GetNonPortableCalls();
             Assert.AreEqual(0, nonPortableCalls.Count);
         }
     }

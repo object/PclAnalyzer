@@ -50,13 +50,6 @@ namespace PclAnalyzer.Reflection
         {
             var module = ModuleDefinition.ReadModule(_assemblyPath);
 
-            var a = from t in module.Types
-                    where GetTypeFullName(t) == typeName
-                    from m in t.Methods
-                    where m.Body != null && GetMethodFullName(m) == string.Join(".", typeName, methodName)
-                    from i in m.Body.Instructions
-                    select i;
-
             return (from t in module.Types
                     where GetTypeFullName(t) == typeName
                     from m in t.Methods
